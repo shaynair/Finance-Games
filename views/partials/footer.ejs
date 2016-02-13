@@ -2,8 +2,8 @@
             <p>&copy; CAPITAL 2016</p>
         </footer>
 		
-		<%
-			var socket = io();
+		<script>
+			var socket = io('https://finance-games.herokuapp.com/');
 			
 			function register() {
 				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
@@ -20,4 +20,4 @@
 			socket.on('registerSuccess', function(id, name) {
 				alert('Registered ' + id + ', ' + name);
 			});
-		%>
+		</script>
