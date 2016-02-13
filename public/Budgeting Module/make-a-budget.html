@@ -116,13 +116,14 @@ Fill in this chart to see where you are financially on an average month. You can
       </tr>
       <tr>
           <td><strong><i>Monthly Net Income</i></strong></td>
-          <td style="color:{{myCol}}">$ {{ netIncome() }} </td>
+          <td id="color_indicator">$ {{ netIncome() }} </td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <script>
+    var indicator = $("#color_indicator");
     var app = angular.module('myApp', []);
     app.controller('myCtrl', function($scope) {
         $scope.myCol = "black";
@@ -135,15 +136,18 @@ Fill in this chart to see where you are financially on an average month. You can
         $scope.miscellaneous = 0;
         $scope.netIncome = function() {
             test = $scope.monthlySalary + $scope.monthlyAllowance + $scope.other - $scope.food - $scope.clothing - $scope.entertainment - $scope.miscellaneous
-        return test};
-        alert($scope.netIncome());
-        if ($scope.netIncome() > 0) {
-            document.getElementById("color_indicator").style.color = "green";
-        } else if ($scope.netIncome() < 0) {
-            document.getElementById("color_indicator").style.color = "red";           
+        if (test === 0) {
+            indicator.css("color", "black");
+        } else if (test > 0) {
+            indicator.css("color", "green");
+        } else if (test < 0) {
+            indicator.css("color", "red");         
+        } else {
+            document.getElementById("color_indicator").innerHTML = "-";
         }
-    });
-    
+        return test;
+        };
+    });    
 </script>
         
     </body>
