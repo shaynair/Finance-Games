@@ -10,8 +10,7 @@
   "dependencies": {
     "ejs": "2.3.3",
     "express": "4.13.3",
-	"jade": "*",
-    "stylus": "*"
+    "body-parser": "1.13.x"
   },
   "engines": {
     "node": "4.3.0",
