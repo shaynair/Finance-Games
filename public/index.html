@@ -1,22 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
- 
+<html lang="en-US">
 <head>
-    <title>The Finance Games!</title>
+    <title>The Finance Games</title>
+    <meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="author" content="Capital"/>
+    <meta name="description" content="An interactive game to help teach financial literacy to everyone, the fun way."/>
+    <meta name="keywords" content="Financial, Literacy, Finance, Games"/>
+ 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="robots" content="index, noodp, follow" /></meta>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /></meta>
  
- 
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- 
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    
-    <link rel="stylesheet" type="text/css" href="main.css">
- 
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.3/animate.min.css"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/> 
+    <link rel="stylesheet" href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
 </head>
- 
 <body>
- 
     <div class="container">
         <div class="header">
             <nav>
@@ -29,21 +33,21 @@
                     </li>
                 </ul>
             </nav>
-            <h3><img src="Drawing.png"/></h3>
+            <h3><img src="images/Drawing.png" alt="The Finance Games"/></h3>
         </div>
  
       <div class="jumbotron">
         <h1>Financial literacy, the fun way.</h1>
-        <form class="form-signin">
-        <label for="inputName" class="sr-only">Name</label>
-        <input type="name" name="inputName" id="inputName" class="form-control" placeholder="Name" required autofocus>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
-         
-        <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign up</button>
-      </form>
+		<form class="form-signin">
+			<label for="inputName" class="sr-only">Name</label>
+			<input type="name" name="inputName" id="inputName" class="form-control" placeholder="Name" required autofocus>
+			<label for="inputEmail" class="sr-only">Email address</label>
+			<input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+			<label for="inputPassword" class="sr-only">Password</label>
+			<input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+			 
+			<button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign up</button>
+		</form>
       </div>
  
         <div class="row marketing">
@@ -76,7 +80,4 @@
  
     </div>
 </body>
-    
-    
- 
 </html>
