@@ -76,12 +76,14 @@ socketio.listen(server).sockets.on('connection', function(socket){
 		client.query("SELECT * FROM users WHERE user = $1 OR email = $2", [user, email], function(error, result) {
 			if (error != null || result.rows.length > 0) {
 				socket.emit('registerErrorExists');
+				console.log("Error exist register: " + result.rows + ", " + error);
 			} else {
-				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hashSync(pass)], function(error, result) {
-					if (error != null || result.rows.length != 1) {
+				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hashSync(pass)], function(err, res) {
+					if (err != null || res.rows.length != 1) {
 						socket.emit('registerError');
+						console.log("Error register: " + res.rows + ", " + err);
 					} else {
-						socket.emit('registerSuccess', result.rows[0].id, result.rows[0].name);
+						socket.emit('registerSuccess', res.rows[0].id, res.rows[0].name);
 					}
 				});
 			}
@@ -93,6 +95,7 @@ socketio.listen(server).sockets.on('connection', function(socket){
 		client.query("SELECT * FROM users WHERE user = $1", [user], function(error, result) {
 			if (error != null || result.rows.length != 1) {
 				socket.emit('loginErrorNone');
+				console.log("Error login: " + result.rows + ", " + error);
 			} else {
 				bcrypt.compare(pass, result.rows[0].pass, function(err, res) {
 					if (res === true) {
