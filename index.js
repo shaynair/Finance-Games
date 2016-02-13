@@ -1,6 +1,5 @@
 var express = require('express');
-var socket = require('socket.io');
-var bodyParser = require('body-parser');
+var socketio = require('socket.io');
 var cookieSession = require('cookie-session');
 var compression = require('compression');
 var pg = require('pg');
@@ -10,19 +9,13 @@ var xignite = {_token: "FCAC0E1A3DB14E33993F2F10C1A281BA"};
 
 var app = express();
 
-app.set('port', 5000);
+app.set('port', process.env.PORT || 5000);
 
 app.use(express.static(__dirname + '/public'));
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-
-
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
 
 
 app.use(cookieSession({
@@ -35,7 +28,7 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-var server = app.listen(app.get('port'), function() {
+var server = require('http').createServer(app).listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
@@ -76,8 +69,9 @@ function createClient() {
 	return client;
 }
 
-var io = socket.listen(server);
-io.on('connection', function(socket){
+socketio.listen(server).sockets.on('connection', function(socket){
+	
+	console.log("Socket connected.");
 	
 	socket.on('register', function(user, email, pass) {
 		var client = createClient();

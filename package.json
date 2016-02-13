@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.x",
-    "body-parser": "1.13.x",
     "compression": "1.6.x",
     "cookie-session": "1.2.x",
     "ejs": "2.3.x",
