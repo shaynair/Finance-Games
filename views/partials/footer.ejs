@@ -3,13 +3,16 @@
         </footer>
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 		<script>
-
-		
 			var socket = io('https://finance-games.herokuapp.com/');
 			
 			$("#btnSignUp").click(function() {
+				alert("hello");
 				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
 			});
+			
+			function register() {
+				alert("h");
+			}
 			
 			socket.on('registerErrorExists', function() {
 				alert('This login already exists');
