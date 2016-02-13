@@ -77,7 +77,7 @@ socketio.listen(server).sockets.on('connection', function(socket){
 			if (error != null || result.rows.length > 0) {
 				socket.emit('registerErrorExists');
 			} else {
-				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hash(pass)], function(error, result) {
+				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hashSync(pass)], function(error, result) {
 					if (error != null || result.rows.length != 1) {
 						socket.emit('registerError');
 					} else {
@@ -94,8 +94,7 @@ socketio.listen(server).sockets.on('connection', function(socket){
 			if (error != null || result.rows.length != 1) {
 				socket.emit('loginErrorNone');
 			} else {
-				var dbPass = result.rows[0].pass;
-				bcrypt.compare(pass, dbPass, function(err, res) {
+				bcrypt.compare(pass, result.rows[0].pass, function(err, res) {
 					if (res === true) {
 						socket.emit('loginSuccess', result.rows[0].id, result.rows[0].name);
 					} else {
