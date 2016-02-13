@@ -74,14 +74,15 @@ socketio.listen(server).sockets.on('connection', function(socket){
 	socket.on('register', function(user, email, pass) {
 		var client = createClient();
 		client.query("SELECT * FROM users WHERE user = $1 OR email = $2", [user, email], function(error, result) {
-			if (error != null || result.rows.length > 0) {
+			if (error != null || result.rowCount > 0) {
 				socket.emit('registerErrorExists');
-				console.log("Error exist register: " + result.rows + ", " + error);
+				console.log("Error exist register: " + result.rowCount + ", " + error);
 			} else {
-				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3) RETURNING id", [user, email, bcrypt.hashSync(pass)], function(err, res) {
-					if (err != null || res.rows.length != 1) {
+				var q = client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3) RETURNING id", [user, email, bcrypt.hashSync(pass)]);
+				, function(err, res) {
+					if (err != null || res.rowCount != 1) {
 						socket.emit('registerError');
-						console.log("Error register: " + res.rows + ", " + err);
+						console.log("Error register: " + res.rowCount + ", " + err);
 					} else {
 						socket.emit('registerSuccess', res.rows[0].id, res.rows[0].name);
 					}
@@ -92,10 +93,14 @@ socketio.listen(server).sockets.on('connection', function(socket){
 	
 	socket.on('login', function(user, pass) {
 		var client = createClient();
-		client.query("SELECT * FROM users WHERE user = $1", [user], function(error, result) {
-			if (error != null || result.rows.length != 1) {
+		var q = client.query("SELECT * FROM users WHERE user = $1", [user]);
+		q.on("row", function(row, result)) {
+			result.addRow(row);
+		});
+		q.on("end", function(error, result) {
+			if (error != null || result.rowCount != 1) {
 				socket.emit('loginErrorNone');
-				console.log("Error login: " + result.rows + ", " + error);
+				console.log("Error login: " + result.rowCount + ", " + error);
 			} else {
 				bcrypt.compare(pass, result.rows[0].pass, function(err, res) {
 					if (res === true) {
