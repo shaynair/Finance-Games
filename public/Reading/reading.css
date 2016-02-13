@@ -1,0 +1,85 @@
+.btn {
+    background-color: #222222;
+    color: #9D9D7E;
+    border: none;
+    float:inherit;
+}
+
+.dropdown {
+    position: relative;
+}
+
+body {
+    margin-top: 20px;
+    background-color: rgb(238, 238, 238);
+}
+
+#firstRow {
+    background-color: darkseagreen;
+    background-image: url("H4JsuO.gif");
+      height: 400px;
+    background-size: cover;
+  
+    
+}
+
+.jumbotron {
+    margin-top: 40px;
+background-color: transparent;
+    color:aliceblue;
+    text-shadow: 2px 2px #000000;
+    
+}
+
+#secondRow div {
+    background-color: rgb(238, 238, 238);
+    border-radius: 5px;
+    margin-right: 10px;
+    left: 25%;
+}
+
+#secondRow div:hover {
+    background-color: darkseagreen;
+    border:1px solid darkseagreen; 
+    border-radius: 5px;
+    margin-right: 10px;
+    left: 25%;
+}
+
+#secondRow {
+    margin-top: 30px;
+    text-align: center;    
+}
+
+a {
+  text-decoration:none;
+      color:rgb(51, 51, 51);
+
+}
+
+a:hover
+{
+  text-decoration:none;
+      color: rgb(238, 238, 238);
+
+}
+
+.well {
+	margin-top: 50px;
+	margin-left: 50px;
+	margin-right: 50px;
+	min-height: 100px;
+	position: relative;
+}
+
+
+
+#next {	
+	color: white;
+	background-color: red;
+	float: right;
+	position: absolute;
+	bottom: 0px;
+	right: 0;
+	margin: 5px 5px 5px 5px;
+}
