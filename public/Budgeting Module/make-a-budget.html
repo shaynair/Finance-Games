@@ -58,13 +58,15 @@
             </div>
             </div>      
         </nav>
-        
-        
+
+
+<h2 style="text-align:center">Defining your current situation (incomes and expenses)</h2>
 <div class="container" ng-app="myApp" ng-controller="myCtrl">
-  <h2>Defining your current situation (incomes and expenses)</h2>
   <p>It’s easy to determine how much money you earn in a month, but do you really know where these inflows go towards?
 Fill in this chart to see where you are financially on an average month. You can add or remove rows based on your inflows and spending habits.
-</p>            
+</p>   
+<br>
+<div class="jumbotron"> 
   <table class="table table-striped">
     <thead>
       <tr>
@@ -116,10 +118,11 @@ Fill in this chart to see where you are financially on an average month. You can
       </tr>
       <tr>
           <td><strong><i>Monthly Net Income</i></strong></td>
-          <td id="color_indicator">$ {{ netIncome() }} </td>
+          <td id="color_indicator">$ <strong>{{ netIncome() }}</strong> </td>
       </tr>
     </tbody>
   </table>
+</div>
 </div>
 
 <script>
