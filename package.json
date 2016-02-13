@@ -8,17 +8,19 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.x",
+    "body-parser": "1.13.x",
+    "compression": "1.6.x",
+    "cookie-session": "1.2.x",
     "ejs": "2.3.x",
     "express": "4.13.x",
-    "body-parser": "1.13.x",
-	"cookie-session": "1.2.x",
-	"compression": "1.6.x",
-	"socket.io": "1.4.x",
-	"pg": "4.4.x"
+    "pg": "4.4.x",
+    "socket.io": "1.4.x",
+	"request": "2.69.x"
   },
   "engines": {
     "node": "4.3.x",
-	"npm": "2.14.x"
+    "npm": "2.14.x"
   },
   "repository": {
     "type": "git",

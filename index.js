@@ -4,6 +4,9 @@ var bodyParser = require('body-parser');
 var cookieSession = require('cookie-session');
 var compression = require('compression');
 var pg = require('pg');
+var bcrypt = require('bcrypt-nodejs');
+var request = require('request');
+var xignite = {"_token", "FCAC0E1A3DB14E33993F2F10C1A281BA"};
 
 var app = express();
 
@@ -37,7 +40,7 @@ var server = app.listen(app.get('port'), function() {
 });
 
 // Database
-var conString = "postgres://olgrznlsdbflou:KLu80c0o1xCFo1lCGkvb21z92F@ec2-54-221-201-165.compute-1.amazonaws.com:5432/df28uqsh9kgu5e";
+var conString = process.env.DATABASE_URL + '?ssl=true';
 
 //this initializes a connection pool
 //it will keep idle connections open for a (configurable) 30 seconds
@@ -46,24 +49,38 @@ pg.connect(conString, function(err, client, done) {
   if(err) {
     return console.error('error fetching client from pool', err);
   }
+  client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, '
+			+ 'name VARCHAR(40) not null, email text not null, '
+			+ 'password text not null, points int not null default 0, '
+			+ 'CONSTRAINT u_constraint UNIQUE (name), CONSTRAINT e_constraint UNIQUE (email))')
+			.on('end', client.end.bind(client));
   done();
+  // var client = new Client({user: 'brianc', database: 'test'});
+  // client.connect();
+  // client.on('drain', client.end.bind(client));
   // var query = client.query("stuff = $1", ['$1 here']);
   // query.on('row', function(row, result) {
 	  // row here; e.g. row.name <-- or use result.addRow(row)
   // })
   // query.on('end', function(result) { <-- result.rowCount at end, or result.rows
-  /*client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-    //call `done()` to release the client back to the pool
-    done();
-
-    if(err) {
-      return console.error('error running query', err);
-    }
-    console.log(result.rows[0].number);
-    //output: 1
-  });*/
 });
 
+//var hash = bcrypt.hash("x");
+//bcrypt.compare("x", hash, function(err, res) {
+    // res == true
+//});
+
+//request('http://www.xignite.com/xAnalysts.json/ListResearchFields', {form: xignite}, function (error, response, body) {
+//  if (!error && response.statusCode == 200) {
+//    
+//  }
+//});
+
 var io = socket.listen(server);
-// TODO
+io.on('connection', function(socket){
+	
+	socket.on('disconnect', function() {
+		// Free resources
+	});
+});
 
