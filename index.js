@@ -63,15 +63,13 @@ pg.connect(conString, function(err, client, done) {
 //});
 
 function createClient() {
-	var client = new Client(process.env.DATABASE_URL);
+	var client = new pg.Client(process.env.DATABASE_URL);
 	client.connect();
 	client.on('drain', client.end.bind(client));
 	return client;
 }
 
 socketio.listen(server).sockets.on('connection', function(socket){
-	
-	console.log("Socket connected.");
 	
 	socket.on('register', function(user, email, pass) {
 		var client = createClient();
