@@ -11,7 +11,7 @@
     "ejs": "2.3.x",
     "express": "4.13.x",
     "body-parser": "1.13.x",
-	"cookie-session": "3.4.x",
+	"cookie-session": "1.2.x",
 	"compression": "1.6.x"
   },
   "engines": {
