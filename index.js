@@ -78,7 +78,7 @@ socketio.listen(server).sockets.on('connection', function(socket){
 				socket.emit('registerErrorExists');
 				console.log("Error exist register: " + result.rows + ", " + error);
 			} else {
-				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hashSync(pass)], function(err, res) {
+				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3) RETURNING id", [user, email, bcrypt.hashSync(pass)], function(err, res) {
 					if (err != null || res.rows.length != 1) {
 						socket.emit('registerError');
 						console.log("Error register: " + res.rows + ", " + err);
