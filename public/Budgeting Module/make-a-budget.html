@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head> 
+        <meta charset="utf-8">
+        <!--makes it so the site is resized to the device's screen size-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">  
+        <!--MaxCDN-->  
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  <!-- Latest compiled CSS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  <!-- jQuery library -->
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>  <!-- Latest compiled JavaScript -->    
+        <!--link to the CSS file-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+         
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet"> 
+        <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <link rel="stylesheet" href="make-a-budget.css">
+        <title>Homepage</title>
+    </head> 
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span> 
+                    </button>
+                    <a href="#" class="pull-left"><img src="Drawing_ver2.png"></a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#zerothRow">Home</a></li>
+                        <li><a href="#firstRow">Learn</a></li>
+                        <li><a href="#thirdRow">Contacts</a></li>
+                        <li><a href="#fourthRow">About</a></li>
+                    </ul>
+        
+                <ul class="nav navbar-nav navbar-right">
+                        
+<div class="dropdown">
+<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Settings
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Log Out</a></li>
+  </ul>
+</div>
+                 
+                </ul>
+            </div>
+            </div>      
+        </nav>
+        
+        
+<div class="container" ng-app="myApp" ng-controller="myCtrl">
+  <h2>Defining your current situation (incomes and expenses)</h2>
+  <p>It’s easy to determine how much money you earn in a month, but do you really know where these inflows go towards?
+Fill in this chart to see where you are financially on an average month. You can add or remove rows based on your inflows and spending habits.
+</p>            
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Income</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Monthly Salary (from part-time job)</td>
+        <td>$ <input type="number" ng-model="monthlySalary"></td>
+      </tr>
+      <tr>
+        <td>Monthly Allowance</td>
+        <td>$ <input type="number" ng-model="monthlyAllowance"></td>
+      </tr>
+      <tr>
+        <td>Other</td>
+        <td>$ <input type="number" ng-model="other"></td>
+      </tr> 
+      <tr>
+          <td><i>Total income</i></td>
+      <td>$ {{ monthlySalary + monthlyAllowance + other }}</td>
+      </tr>
+     <thead>
+        <br>
+         <tr>
+             <th>Expenses</th>
+         </tr>
+    </thead>
+        <tr>
+             <td>Food</td>
+             <td>$ <input type="number" ng-model="food"></td>
+      </tr>
+      <tr>
+             <td>Clothing</td>
+             <td>$ <input type="number" ng-model="clothing"></td>
+      </tr>
+        <tr>
+             <td>Entertainment</td>
+             <td>$ <input type="number" ng-model="entertainment"></td>
+      </tr>
+      <tr>
+             <td>Miscellaneous </td>
+             <td>$ <input type="number" ng-model="miscellaneous"></td>
+      </tr>
+      <tr>
+          <td><i>Total expenses</i></td>
+          <td>$ {{ food + clothing + entertainment + miscellaneous + expenses }} </td>
+      </tr>
+      <tr>
+          <td><strong><i>Monthly Net Income</i></strong></td>
+          <td style="color:{{myCol}}">$ {{ netIncome() }} </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+        $scope.myCol = "black";
+        $scope.monthlySalary = 0;
+        $scope.monthlyAllowance = 0;
+        $scope.other = 0;
+        $scope.food = 0;
+        $scope.clothing = 0;
+        $scope.entertainment = 0;
+        $scope.miscellaneous = 0;
+        $scope.netIncome = function() {
+            test = $scope.monthlySalary + $scope.monthlyAllowance + $scope.other - $scope.food - $scope.clothing - $scope.entertainment - $scope.miscellaneous
+        return test};
+        alert($scope.netIncome());
+        if ($scope.netIncome() > 0) {
+            document.getElementById("color_indicator").style.color = "green";
+        } else if ($scope.netIncome() < 0) {
+            document.getElementById("color_indicator").style.color = "red";           
+        }
+    });
+    
+</script>
+        
+    </body>
+</html>
