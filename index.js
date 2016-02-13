@@ -1,5 +1,4 @@
 var express = require('express');
-var bodyParser = require('body-parser')
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
@@ -9,11 +8,21 @@ app.use(express.static(__dirname + '/public'));
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use(express.methodOverride()); 
+
+var cookieSession = require('cookie-session');
+app.use(cookieSession({
+    keys: ['userId', 'userName']
+}));
+
+var compression = require('compression');
+app.use(compression());
+
 app.use(app.router);
 
 app.get('/', function(request, response) {

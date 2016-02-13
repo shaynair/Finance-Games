@@ -8,13 +8,15 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "ejs": "2.3.3",
-    "express": "4.13.3",
-    "body-parser": "1.13.x"
+    "ejs": "2.3.x",
+    "express": "4.13.x",
+    "body-parser": "1.13.x",
+	"cookie-session": "3.4.x",
+	"compression": "1.6.x"
   },
   "engines": {
-    "node": "4.3.0",
-	"npm": "2.14.18"
+    "node": "4.3.x",
+	"npm": "2.14.x"
   },
   "repository": {
     "type": "git",
