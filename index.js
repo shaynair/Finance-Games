@@ -6,7 +6,7 @@ var compression = require('compression');
 var pg = require('pg');
 var bcrypt = require('bcrypt-nodejs');
 var request = require('request');
-var xignite = {"_token", "FCAC0E1A3DB14E33993F2F10C1A281BA"};
+var xignite = {_token: "FCAC0E1A3DB14E33993F2F10C1A281BA"};
 
 var app = express();
 
