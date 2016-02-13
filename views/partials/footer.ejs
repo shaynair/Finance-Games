@@ -1,17 +1,13 @@
         <footer class="footer">
             <p>&copy; CAPITAL 2016</p>
         </footer>
+		
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 		<script>
-			var socket = io('https://finance-games.herokuapp.com/');
-			
-			$("#btnSignUp").click(function() {
-				alert("hello");
-				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
-			});
+			var socket = io('https://finance-games.herokuapp.com:5000/');
 			
 			function register() {
-				alert("h");
+				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
 			}
 			
 			socket.on('registerErrorExists', function() {

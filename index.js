@@ -10,7 +10,7 @@ var xignite = {_token: "FCAC0E1A3DB14E33993F2F10C1A281BA"};
 
 var app = express();
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', 5000);
 
 app.use(express.static(__dirname + '/public'));
 
