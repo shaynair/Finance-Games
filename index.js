@@ -50,14 +50,11 @@ pg.connect(conString, function(err, client, done) {
     return console.error('error fetching client from pool', err);
   }
   client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, '
-			+ 'name VARCHAR(40) not null, email text not null, '
+			+ 'name text not null, email text not null, '
 			+ 'password text not null, points int not null default 0, '
 			+ 'CONSTRAINT u_constraint UNIQUE (name), CONSTRAINT e_constraint UNIQUE (email))')
 			.on('end', client.end.bind(client));
   done();
-  // var client = new Client({user: 'brianc', database: 'test'});
-  // client.connect();
-  // client.on('drain', client.end.bind(client));
   // var query = client.query("stuff = $1", ['$1 here']);
   // query.on('row', function(row, result) {
 	  // row here; e.g. row.name <-- or use result.addRow(row)
@@ -65,10 +62,6 @@ pg.connect(conString, function(err, client, done) {
   // query.on('end', function(result) { <-- result.rowCount at end, or result.rows
 });
 
-//var hash = bcrypt.hash("x");
-//bcrypt.compare("x", hash, function(err, res) {
-    // res == true
-//});
 
 //request('http://www.xignite.com/xAnalysts.json/ListResearchFields', {form: xignite}, function (error, response, body) {
 //  if (!error && response.statusCode == 200) {
@@ -76,8 +69,50 @@ pg.connect(conString, function(err, client, done) {
 //  }
 //});
 
+function createClient() {
+	var client = new Client(process.env.DATABASE_URL);
+	client.connect();
+	client.on('drain', client.end.bind(client));
+	return client;
+}
+
 var io = socket.listen(server);
 io.on('connection', function(socket){
+	
+	socket.on('register', function(user, email, pass) {
+		var client = createClient();
+		client.query("SELECT * FROM users WHERE user = $1 OR email = $2", [user, email], function(error, result) {
+			if (error != null || result.rows.length > 0) {
+				socket.emit('registerErrorExists');
+			} else {
+				client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3)", [user, email, bcrypt.hash(pass)], function(error, result) {
+					if (error != null || result.rows.length != 1) {
+						socket.emit('registerError');
+					} else {
+						socket.emit('registerSuccess', result.rows[0].id, result.rows[0].name);
+					}
+				});
+			}
+		});
+	});
+	
+	socket.on('login', function(user, pass) {
+		var client = createClient();
+		client.query("SELECT * FROM users WHERE user = $1", [user], function(error, result) {
+			if (error != null || result.rows.length != 1) {
+				socket.emit('loginErrorNone');
+			} else {
+				var dbPass = result.rows[0].pass;
+				bcrypt.compare(pass, dbPass, function(err, res) {
+					if (res === true) {
+						socket.emit('loginSuccess', result.rows[0].id, result.rows[0].name);
+					} else {
+						socket.emit('loginErrorPass');
+					}
+				});
+			}
+		});
+	});
 	
 	socket.on('disconnect', function() {
 		// Free resources

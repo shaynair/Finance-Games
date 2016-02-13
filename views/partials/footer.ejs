@@ -1,3 +1,23 @@
         <footer class="footer">
             <p>&copy; CAPITAL 2016</p>
         </footer>
+		
+		<%
+			var socket = io();
+			
+			function register() {
+				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
+			}
+			
+			socket.on('registerErrorExists', function() {
+				alert('This login already exists');
+			});
+			
+			socket.on('registerError', function() {
+				alert('There was some error');
+			});
+			
+			socket.on('registerSuccess', function(id, name) {
+				alert('Registered ' + id + ', ' + name);
+			});
+		%>
