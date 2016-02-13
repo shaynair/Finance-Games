@@ -1,26 +1,29 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.1.5",
-  "description": "A sample Node.js app using Express 4",
+  "name": "finance-games",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The Finance Games",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "ejs": "2.3.3",
-    "express": "4.13.3"
+    "express": "4.13.3",
+	"jade": "*",
+    "stylus": "*"
   },
   "engines": {
-    "node": "0.12.7"
+    "node": "4.3.0",
+	"npm": "2.14.18"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "url": "https://github.com/akshaynair/finance-games"
   },
   "keywords": [
-    "node",
-    "heroku",
-    "express"
+    "finance",
+    "games"
   ],
-  "license": "MIT"
+  "license": "GNU"
 }
