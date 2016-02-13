@@ -44,8 +44,7 @@ pg.connect(conString, function(err, client, done) {
   }
   client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, '
 			+ 'name text not null, email text not null, '
-			+ 'password text not null, points int not null default 0, '
-			+ 'CONSTRAINT u_constraint UNIQUE (name), CONSTRAINT e_constraint UNIQUE (email))')
+			+ 'password text not null, points int not null default 0)')
 			.on('end', client.end.bind(client));
   done();
   // var query = client.query("stuff = $1", ['$1 here']);
@@ -65,7 +64,7 @@ pg.connect(conString, function(err, client, done) {
 function createClient() {
 	var client = new pg.Client(conString);
 	client.connect();
-	client.on('drain', client.end.bind(client));
+	
 	return client;
 }
 
@@ -77,17 +76,20 @@ socketio.listen(server).sockets.on('connection', function(socket){
 			if (error != null || result.rowCount > 0) {
 				socket.emit('registerErrorExists');
 				console.log("Error exist register: " + result.rowCount + ", " + error);
+				client.end();
 			} else {
 				var q = client.query("INSERT INTO users (name, email, password) VALUES($1, $2, $3) RETURNING id", [user, email, bcrypt.hashSync(pass)]);
-				q.on("row", function(row, result) {
-					result.addRow(row);
+				q.on("row", function(row, res) {
+					res.addRow(row);
 				});
-				q.on("end", function(err, res) {
-					if (err != null || res.rowCount != 1) {
+				q.on("end", function(res) {
+					if (res.rowCount != 1) {
 						socket.emit('registerError');
-						console.log("Error register: " + res.rowCount + ", " + err);
+						console.log("Error register: " + res.rowCount);
+						client.end();
 					} else {
-						socket.emit('registerSuccess', res.rows[0].id, res.rows[0].name);
+						socket.emit('registerSuccess', res.rows[0].id, user);
+						client.end();
 					}
 				});
 			}
@@ -100,16 +102,19 @@ socketio.listen(server).sockets.on('connection', function(socket){
 		q.on("row", function(row, result) {
 			result.addRow(row);
 		});
-		q.on("end", function(error, result) {
-			if (error != null || result.rowCount != 1) {
+		q.on("end", function(result) {
+			if (result.rowCount != 1) {
 				socket.emit('loginErrorNone');
-				console.log("Error login: " + result.rowCount + ", " + error);
+				client.end();
+				console.log("Error login: " + result.rowCount);
 			} else {
 				bcrypt.compare(pass, result.rows[0].pass, function(err, res) {
 					if (res === true) {
 						socket.emit('loginSuccess', result.rows[0].id, result.rows[0].name);
+						client.end();
 					} else {
 						socket.emit('loginErrorPass');
+						client.end();
 					}
 				});
 			}
