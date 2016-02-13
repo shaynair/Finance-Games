@@ -33,7 +33,7 @@ var server = require('http').createServer(app).listen(app.get('port'), function(
 });
 
 // Database
-var conString = process.env.DATABASE_URL + '?ssl=true';
+var conString = 'postgres://olgrznlsdbflou:KLu80c0o1xCFo1lCGkvb21z92F@ec2-54-221-201-165.compute-1.amazonaws.com:5432/df28uqsh9kgu5e?ssl=true';
 
 //this initializes a connection pool
 //it will keep idle connections open for a (configurable) 30 seconds
@@ -63,7 +63,7 @@ pg.connect(conString, function(err, client, done) {
 //});
 
 function createClient() {
-	var client = new pg.Client(process.env.DATABASE_URL);
+	var client = new pg.Client(conString);
 	client.connect();
 	client.on('drain', client.end.bind(client));
 	return client;

@@ -4,7 +4,7 @@
 		
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 		<script>
-			var socket = io('https://finance-games.herokuapp.com/');
+			var socket = io();
 			
 			function register() {
 				socket.emit('register', $("#inputName").val(), $("#inputEmail").val(), $("#inputPassword").val());
