@@ -1,37 +1,30 @@
-      <div class="jumbotron">
-        <h1>Financial literacy, the fun way.</h1>
-		<form class="form-signin">
-			<label for="inputName" class="sr-only">Name</label>
-			<input type="name" name="inputName" id="inputName" class="form-control" placeholder="Name" required autofocus>
-			<label for="inputEmail" class="sr-only">Email address</label>
-			<input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
-			 
-			<button id="btnSignUp" class="btn btn-lg btn-primary btn-block" onclick="register()" type="button">Sign up</button>
-		</form>
-      </div>
- 
-        <div class="row marketing">
-            <div class="col-lg-6">
-                <h4>Budgeting</h4>
-                <p>Learn to manage your expenses in a fun an organized way, so you can finally buy that new phone you've been wanting.</p>
- 
-                <h4>Feature</h4>
-                <p>Description goes here.</p>
- 
-                <h4>Feature</h4>
-                <p>Description goes here.</p>
-            </div>
- 
-            <div class="col-lg-6">
-                <h4>Investing</h4>
-                <p>Don't know anything about the stock market? The Finance Games teaches you what you need to know, step-by-step.</p>
- 
-                <h4>Feature</h4>
-                <p>Description goes here.</p>
- 
-                <h4>Feature</h4>
-                <p>Description goes here.</p>
+		<div class="row" id="firstRow">
+            <div class="container">
+                <div class="col-sm-12" >
+                    <div class="jumbotron">
+                        <h1>Select a curriculum below:</h1>
+                    </div>
+                </div>              
             </div>
         </div>
+        <div class="row" id="secondRow">
+            <h1>What will you learn about today?</h1>
+            <p>Select a curriculum to start learning.</p>
+            <br>
+            <a href="/budget">
+                <div class="col-sm-3">
+                    <img src="images/calculator-icon_120x120.png" style="margin-top:10px"/>
+                    <h1>Budgeting</h1>
+                    <p>Learn more about budgeting.</p> 
+               </div>
+            
+            </a>
+            <a href="/invest">
+                <div class="col-sm-3">
+                    <img src="images/oie_transparent_1_130x130.png" />
+                    <h1>Investing</h1>
+                        <p>Learn more about investing.</p>
+               </div>
+                </a>
+            </div>
+	    </div>

@@ -2,14 +2,58 @@
 <html lang="en-US">
 <head>
   <% include ../partials/header.ejs %>
+  <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
 </head>
 
 <body>
   <div class="container">
-    <% include ../partials/nav.ejs %>
-	<% include ../partials/main.ejs %>
+    <% include ../partials/nav_login.ejs %>
+	<% include ../partials/login.ejs %>
   </div>
 
   <% include ../partials/footer.ejs %>
+ 		<script>
+			var signed = true;
+			function register() {
+				$.post(!signed ? "/login" : "/register", {name: $("#inputName").val(), email: $("#inputEmail").val(), pass: $("#inputPassword").val()}, function(data) {
+					if (data == 'registerSuccess' || data == 'loginSuccess') {
+						location.reload();
+					} else if (data == 'registerError') {
+						alert("An error occurred.");
+					} else if (data == 'registerErrorExists') {
+						alert("This info already exists. Please enter something else.");
+					} else if (data == 'loginErrorNone') {
+						alert("This info does not exist.");
+					} else if (data == 'loginErrorPass') {
+						alert("This password is incorrect.");
+					}
+				});
+			}
+			
+			function signup() {
+				if (!signed) {
+					signed = true;
+					$("#inputEmail").removeClass("fadeOutDown").addClass("animated fadeInUp");
+					
+					$("#btnSignUp").fadeOut(200, function() {
+						$(this).text('Sign up').fadeIn(200);
+					});
+					$("#signup").addClass("active", 500);
+					$("#signin").removeClass("active", 500);
+				}
+			}
+			
+			function signin() {
+				if (signed) {
+					signed = false;
+					$("#inputEmail").removeClass("fadeInUp").addClass("animated fadeOutDown");
+					$("#btnSignUp").fadeOut(200, function() {
+						$(this).text('Sign in').fadeIn(200);
+					});
+					$("#signup").removeClass("active", 500);
+					$("#signin").addClass("active", 500);
+				}
+			}
+		</script>
 </body>
 </html>

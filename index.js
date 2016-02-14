@@ -1,36 +1,24 @@
 var express = require('express');
-var socketio = require('socket.io');
-var cookieSession = require('cookie-session');
+var session = require('express-session');
 var compression = require('compression');
 var pg = require('pg');
 var bcrypt = require('bcrypt-nodejs');
 var request = require('request');
+var bodyParser = require('body-parser');
 var xignite = {_token: "FCAC0E1A3DB14E33993F2F10C1A281BA"};
 
 var app = express();
 
-app.set('port', process.env.PORT || 5000);
+	app.set('port', process.env.PORT || 5000);
+	app.use(express.static(__dirname + '/public'));
 
-app.use(express.static(__dirname + '/public'));
-
-// views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-
-
-app.use(cookieSession({
-    keys: ['userId', 'userName']
-}));
-
-app.use(compression());
-
-app.get('/', function(request, response) {
-  response.render('pages/index');
-});
-
-var server = require('http').createServer(app).listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+	// views is directory for all template files
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'ejs');
+	app.use(session({ secret: 'finance-games', resave: false, saveUninitialized: true, cookie: { httpOnly: false }}));
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(compression());
 
 // Database
 var conString = 'postgres://olgrznlsdbflou:KLu80c0o1xCFo1lCGkvb21z92F@ec2-54-221-201-165.compute-1.amazonaws.com:5432/df28uqsh9kgu5e?ssl=true';
@@ -68,13 +56,12 @@ function createClient() {
 	return client;
 }
 
-socketio.listen(server).sockets.on('connection', function(socket){
-	
-	socket.on('register', function(user, email, pass) {
+
+	function register(user, email, pass, sess, response) {
 		var client = createClient();
-		client.query("SELECT * FROM users WHERE user = $1 OR email = $2", [user, email], function(error, result) {
+		client.query("SELECT * FROM users WHERE name LIKE $1 OR email LIKE $2", [user, email], function(error, result) {
 			if (error != null || result.rowCount > 0) {
-				socket.emit('registerErrorExists');
+				response.end('registerErrorExists');
 				console.log("Error exist register: " + result.rowCount + ", " + error);
 				client.end();
 			} else {
@@ -84,45 +71,75 @@ socketio.listen(server).sockets.on('connection', function(socket){
 				});
 				q.on("end", function(res) {
 					if (res.rowCount != 1) {
-						socket.emit('registerError');
+						response.end('registerError');
 						console.log("Error register: " + res.rowCount);
 						client.end();
 					} else {
-						socket.emit('registerSuccess', res.rows[0].id, user);
+						sess.uid = res.rows[0].id;
+						sess.uname = user;
+						sess.save();
+						response.end('registerSuccess');
 						client.end();
 					}
 				});
 			}
 		});
-	});
+	}
 	
-	socket.on('login', function(user, pass) {
+	function login(user, pass, sess, response) {
 		var client = createClient();
-		var q = client.query("SELECT * FROM users WHERE user = $1", [user]);
+		var q = client.query("SELECT * FROM users WHERE name LIKE $1", [user]);
 		q.on("row", function(row, result) {
 			result.addRow(row);
 		});
 		q.on("end", function(result) {
 			if (result.rowCount != 1) {
-				socket.emit('loginErrorNone');
+				response.end('loginErrorNone');
 				client.end();
 				console.log("Error login: " + result.rowCount);
 			} else {
-				bcrypt.compare(pass, result.rows[0].pass, function(err, res) {
-					if (res === true) {
-						socket.emit('loginSuccess', result.rows[0].id, result.rows[0].name);
+				bcrypt.compare(pass, result.rows[0].password, function(err, res) {
+					if (res == true) {
+						sess.uid = result.rows[0].id;
+						sess.uname = result.rows[0].name;
+						sess.save();
+						response.end('loginSuccess');
 						client.end();
 					} else {
-						socket.emit('loginErrorPass');
+						response.end('loginErrorPass');
 						client.end();
 					}
 				});
 			}
 		});
+	}
+
+
+
+app.get('/', function(request, response) {
+	if (request.session.uid) {
+		response.render('pages/main');
+	} else {
+		response.render('pages/index');
+	}
+});
+app.post('/login',function(req,res){
+	login(req.body.name, req.body.pass, req.session, res);
+});
+app.post('/register',function(req,res){
+	register(req.body.name, req.body.email, req.body.pass, req.session, res);
+});
+app.get('/logout',function(req,res){
+	req.session.destroy(function(err){
+		if(err){
+			console.log(err);
+		} else {
+			res.redirect('/');
+		}
 	});
-	
-	socket.on('disconnect', function() {
-		// Free resources
-	});
+});
+
+var server = require('http').createServer(app).listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
 
