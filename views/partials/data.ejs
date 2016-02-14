@@ -1,0 +1,74 @@
+			var before = $("#prev");
+			var after = $("#next");
+			var t = $("#text");
+			var v = $("#video");
+			var w = $(".well");
+			
+			var slide = 0;
+			function update(change) {
+				if (change != 0) {
+					slide += change;
+				}
+				if (slide < 0) {
+					slide = 0;
+				} else if (slide >= data.length) {
+					slide = data.length - 1;
+				}
+				before.attr("disabled", slide == 0);
+				if (slide == data.length - 1) {
+					after.text("END");
+					// module
+				} else {
+					after.text("NEXT");
+					if (change == 0) {
+						refresh();
+					} else {
+						var firstAnim = (change < 0 ? "Right" : "Left");
+						var secondAnim = (change < 0 ? "Left" : "Right");
+						
+						w.addClass("animated fadeOut" + firstAnim + "Big").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+							refresh();
+							$(this).removeClass("fadeOut" + firstAnim + "Big")
+									.addClass("animated fadeIn" + secondAnim + "Big")
+									.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+								$(this).removeClass("animated fadeIn" + secondAnim + "Big");
+							});
+						});
+					}
+				}
+			}
+			
+			function refresh() {
+						var b = data[slide];
+						if (b.mode == 0) {
+							t.css("display", "block");
+							v.css("display", "none");
+							t.text(b.content);
+							after.attr("disabled", false);
+							before.attr("disabled", false);
+						} else if (b.mode == 1) {
+							t.css("display", "none");
+							v.css("display", "block");
+							v.attr("src", b.content);
+							after.attr("disabled", false);
+							before.attr("disabled", false);
+						} else if (b.mode == 2) {
+							t.css("display", "none");
+							v.css("display", "none");
+							after.attr("disabled", true);
+							before.attr("disabled", true);
+							// TODO
+						}
+			}
+			
+			function next() {
+				update(1);
+			}
+			
+			function prev() {
+				update(-1);
+			}
+			
+			$(document).ready(function() {
+				update(0);
+			});

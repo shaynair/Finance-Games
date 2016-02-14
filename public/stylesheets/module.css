@@ -9,25 +9,18 @@
     position: relative;
 }
 
-body {
-    margin-top: 20px;
-    background-color: rgb(238, 238, 238);
-}
 
 #firstRow {
     background-color: darkseagreen;
-    background-image: url("H4JsuO.gif");
+    background-image: url("../images/H4JsuO.gif");
       height: 400px;
-    background-size: cover;
-  
-    
+    background-size: cover;    
 }
 
 .jumbotron {
-    margin-top: 40px;
-background-color: transparent;
-    color:aliceblue;
-    text-shadow: 2px 2px #000000;
+    margin-top: 10px;
+    background-color: rgb(238, 238, 238);
+    color:dimgrey;
     
 }
 
@@ -88,4 +81,21 @@ iframe {
     width: 1000 px;
     height: 515 px;
     
+}
+
+body {
+    margin-top: 40px;
+    background-color: palegreen;    
+}
+
+form {
+    left:50%;
+    vertical-align: middle;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+}
+
+ul {
+    list-style: none;
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <% include ../partials/header.ejs %>
+  <link rel="stylesheet" type="text/css" href="stylesheets/module.css">
+</head>
+
+<body>
+  <div class="container">
+    <% include ../partials/nav_main.ejs %>
+	<% include ../partials/module.ejs %>
+  </div>
+
+  <% include ../partials/footer.ejs %>
+ 		<script>
+			// mode 0 = text, 1 = video, 2 = quiz
+			var data = [
+				{mode: 0, content: 'Plain and simple, stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.'},
+				{mode: 0, content: 'Holding a company's stock means that you are one of the many owners (shareholders) of a company and, as such, you have a claim (albeit usually very small) to everything the company owns. Yes, this means that technically you own a tiny sliver of every piece of furniture, every trademark, and every contract of the company. As an owner, you are entitled to your share of the company's earnings as well as any voting rights attached to the stock.'},
+				{mode: 0, content: 'Stock prices change every day as a result of market forces. By this we mean that share prices change because of supply and demand. If more people want to buy a stock (demand) than sell it (supply), then the price moves up. Conversely, if more people wanted to sell a stock than buy it, there would be greater supply than demand, and the price would fall.'},
+				{mode: 0, content: 'Understanding supply and demand is easy. What is difficult to comprehend is what makes people like a particular stock and dislike another stock. This comes down to figuring out what news is positive for a company and what news is negative. There are many answers to this problem and just about any investor you ask has their own ideas and strategies.'},
+				{mode: 1, content: 'https://www.youtube.com/embed/hCzIcS_xPiQ?autoplay=1'},
+				{mode: 2, content: ['If you buy a company's stock...', 1, 'You own a part of the company', 
+							'You have lent money to the company', 'You are liable for the company's debts', 
+							'The company will return your original investment to you with interest',
+							'Stocks are known as "equities" because each stock share represents a small percentage of ownership in the company, entitling the shareholder to vote in the election of directors and on other matters taken up at shareholder meetings or by proxy.']},
+				{mode: 2, content: ['In general, investments that are riskier tend to provide higher returns over time than investments with less risk.', 1, 'True', 'False',
+									'The stock and bond markets tend to reward risk-taking over the long term. This is called the risk-reward tradeoff. Over the short term, however, high-risk investments such as small-company stocks can be extremely volatile. The less willing you are to take that risk, the more you may want to emphasize investments that provide a regular return with less volatility, such as short-term bonds.']},
+				{mode: 2, content: ['You invest $500 to buy $1,000 worth of stock on margin. The value of the stock drops by 50%. You sell it. Approximately how much of your original $500 investment are you left with in the end?', 
+									3, '$500', '$250', '$0', 'When you buy stock on margin, you risk losing your entire investment - or much more. In this example an investor used $500 to buy $1,000 worth of stock, borrowing the additional $500 from a brokerage firm to make the purchase. When the stock was sold after dropping 50% in value, its remaining worth was only $500 - the same amount the investor still owed to the brokerage firm for the margin loan.']},
+				{}
+			];
+			<% include ../partials/data.ejs %>
+		</script>
+</body>
+</html>

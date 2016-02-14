@@ -123,6 +123,20 @@ app.get('/', function(request, response) {
 		response.render('pages/index');
 	}
 });
+app.get('/invest', function(request, response) {
+	if (request.session.uid) {
+		response.render('pages/invest');
+	} else {
+		response.redirect('/');
+	}
+});
+app.get('/budget', function(request, response) {
+	if (request.session.uid) {
+		response.render('pages/budget');
+	} else {
+		response.redirect('/');
+	}
+});
 app.post('/login',function(req,res){
 	login(req.body.name, req.body.pass, req.session, res);
 });
