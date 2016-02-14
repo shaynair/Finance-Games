@@ -37,8 +37,11 @@
 				for (var i = 0; i < stock.length; i++) {
 					(function() {
 						var s = stock[i];
-						cr.append('<tr id="c' + i + '"><td>' + s.name + '</td></tr>');
+						cr.append('<tr class="fadeimg" id="c' + i + '"><td>' + s.name + '</td></tr>');
 						$("#c" + i).click(function() {
+							cr.children("tbody").children().removeClass("active-row");
+							$(this).addClass("active-row");
+						
 							$("#companyLogo").attr("src", s.logo);
 							$("#companyName").html('<b>' + s.name + '</b>' + " (" + s.symbol + ")");
 							$("#companySymbol").html('<i>' + s.industry + '</i>');
@@ -50,7 +53,7 @@
 							}
 							if ((s.currentDeviation / 100.0) <= risk) {
 								var type = riskType[((s.currentDeviation / 100.0) | 0) - 1];
-								pro.append('<li>This stock fits your ' + riskType[risk] + '-risk assessment.</li>');
+								pro.append('<li>This stock fits your ' + riskType[risk - 1] + '-risk assessment.</li>');
 							}
 							if (s.futureEstimate > s.currentEstimate) {
 								pro.append('<li>This stock is projected to increase in price in the future.</li>');

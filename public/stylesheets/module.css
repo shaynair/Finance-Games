@@ -185,3 +185,8 @@ th {
 .conPoint, .proPoint {
 	margin-left: -20px;
 }
+
+.active-row {
+	background-color: mediumseagreen;
+	color:white;
+}
