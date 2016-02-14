@@ -83,3 +83,9 @@ a:hover
 	right: 0;
 	margin: 5px 5px 5px 5px;
 }
+
+iframe {
+    width: 1000 px;
+    height: 515 px;
+    
+}
