@@ -9,12 +9,72 @@
   <div class="container">
     <% include ../partials/nav_main.ejs %>
 	<% include ../partials/module.ejs %>
+	<% include ../partials/invest.ejs %>
   </div>
 
   <% include ../partials/footer.ejs %>
   <% include ../partials/points.ejs %>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
  		<script>
 			// mode 0 = text, 1 = video, 2 = quiz
+			var socket = io();
+			var risk = 0;
+			var stock = [];
+			var riskType = ["low", "medium", "high"];
+			
+			function calculateStockPoints(s, risk) {
+				return s.dividend + s.meanRecommend + ((s.currentDeviation / 100.0) <= risk ? (s.currentDeviation / 100.0) : 0) + (s.futureEstimate - s.currentEstimate) / 10.0;
+			}
+			
+			socket.on('stocks', function(data) {
+				stock = data;
+				
+				stock.sort(function(a,b) {
+					return calculateStockPoints(b,risk) - calculateStockPoints(a,risk);
+				});
+				
+				var cr = $("#leftTable");
+				for (var i = 0; i < stock.length; i++) {
+					(function() {
+						var s = stock[i];
+						cr.append('<tr id="c' + i + '"><td>' + s.name + '</td></tr>');
+						$("#c" + i).click(function() {
+							$("#companyLogo").attr("src", s.logo);
+							$("#companyName").html('<b>' + s.name + '</b>' + " (" + s.symbol + ")");
+							$("#companySymbol").html('<i>' + s.industry + '</i>');
+							
+							var pro = $(".proPoint");
+							pro.empty();
+							if (s.dividend > 0) {
+								pro.append('<li>This stock pays ' + s.dividend + ' annual dividends.</li>');
+							}
+							if ((s.currentDeviation / 100.0) <= risk) {
+								var type = riskType[((s.currentDeviation / 100.0) | 0) - 1];
+								pro.append('<li>This stock fits your ' + riskType[risk] + '-risk assessment.</li>');
+							}
+							if (s.futureEstimate > s.currentEstimate) {
+								pro.append('<li>This stock is projected to increase in price in the future.</li>');
+							}
+							if (s.meanRecommend > 0) {
+								pro.append('<li>This stock is recommended by experts to buy.</li>');
+							}
+							
+							var con = $(".conPoint");
+							con.empty();
+							if (s.futureEstimate < s.currentEstimate) {
+								con.append('<li>This stock is projected to decrease in price in the future.</li>');
+							}
+							if (s.meanRecommend < 0) {
+								con.append('<li>This stock is recommended by experts to sell.</li>');
+							}
+						});
+					})();
+				}
+			});
+			$(document).ready(function() {
+				socket.emit('getStocks');
+			});
+			
 			var typ = 0;
 			var data = [
 				{mode: 0, content: 'Plain and simple, stock is a share in the ownership of a company. Stock represents a claim on the company\'s assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.'},
@@ -24,12 +84,18 @@
 				{mode: 1, content: 'https://www.youtube.com/embed/hCzIcS_xPiQ?autoplay=1'},
 				{mode: 2, content: ['If you buy a company\'s stock...', 1, 'You own a part of the company', 
 							'You have lent money to the company', 'You are liable for the company\'s debts', 
-							'The company will return your original investment to you with interest',
+							'The company will return your investment to you with interest',
 							'Stocks are known as "equities" because each stock share represents a small percentage of ownership in the company, entitling the shareholder to vote in the election of directors and on other matters taken up at shareholder meetings or by proxy.']},
 				{mode: 2, content: ['In general, investments that are riskier tend to provide higher returns over time than investments with less risk.', 1, 'True', 'False',
 									'The stock and bond markets tend to reward risk-taking over the long term. This is called the risk-reward tradeoff. Over the short term, however, high-risk investments such as small-company stocks can be extremely volatile. The less willing you are to take that risk, the more you may want to emphasize investments that provide a regular return with less volatility, such as short-term bonds.']},
 				{mode: 2, content: ['You invest $500 to buy $1,000 worth of stock on margin. The value of the stock drops by 50%. You sell it. Approximately how much of your original $500 investment are you left with in the end?', 
 									3, '$500', '$250', '$0', 'When you buy stock on margin, you risk losing your entire investment - or much more. In this example an investor used $500 to buy $1,000 worth of stock, borrowing the additional $500 from a brokerage firm to make the purchase. When the stock was sold after dropping 50% in value, its remaining worth was only $500 - the same amount the investor still owed to the brokerage firm for the margin loan.']},
+				{mode: 0, content: 'The types of stocks you should trade generally depends on your level of risk tolerance, calculated from a risk assessment test, since stocks are usually volatile and generally unpredictable for most people.'},
+				{mode: 2, content: ['What is your risk tolerance?', -1, 'I don\'t know.', 'Low-risk', 'Medium-risk', 'High-risk', '']},
+				{mode: 2, content: ['You are on a TV game show and can choose one of the following. Which would you take?', 0, '$1,000 in cash', 'A 50% chance at winning $5,000', 'A 25% chance at winning $10,000', 'A 5% chance at winning $100,000', '']},
+				{mode: 2, content: ['If you unexpectedly received $20,000 to invest, what would you do?', 0, 'Deposit it in a bank account, money market account, or an insured CD', 'Invest it in safe high quality bonds or bond mutual funds', 'Invest it in stocks or stock mutual funds', '']},
+				{mode: 2, content: ['When you think of the word "risk" which of the following words comes to mind first?', 0, 'Loss', 'Uncertainty', 'Opportunity', 'Thrill', '']},
+				{mode: 2, content: ['What is your current age in years?', 0, '56 or more', '41-55', '26-40', '25 or less']},
 				{}
 			];
 			<% include ../partials/data.ejs %>

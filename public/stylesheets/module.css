@@ -139,3 +139,49 @@ ul {
 #whiteback {
     background-color: aliceblue;
 }
+
+
+.filterable-cell:hover {
+    background-color: dimgrey;
+    color:white;
+}
+
+#pros {
+    background-color: mediumseagreen;
+    border-radius: 10px;
+    color:aliceblue;
+}
+
+#cons {
+    background-color: mediumvioletred;
+    border-radius: 10px;
+    color:aliceblue;
+}
+
+#point {
+    margin-bottom: 10px;
+}
+
+th {
+    font-size: 20px;
+}
+
+.module {
+	min-height: 540px;
+}
+
+#leftCol {
+    width: 280px;
+    overflow-y: scroll;
+	max-height: 460px;
+	position: absolute;
+}
+
+#content {
+    position: relative;            
+    margin-left: 320px;
+}
+
+.conPoint, .proPoint {
+	margin-left: -20px;
+}

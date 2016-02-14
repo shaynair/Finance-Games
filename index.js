@@ -5,7 +5,9 @@ var pg = require('pg');
 var bcrypt = require('bcrypt-nodejs');
 var request = require('request');
 var bodyParser = require('body-parser');
-var xignite = {_token: "FCAC0E1A3DB14E33993F2F10C1A281BA"};
+var socketio = require('socket.io');
+var moment = require('moment');
+var xignite = "FCAC0E1A3DB14E33993F2F10C1A281BA";
 
 var app = express();
 
@@ -46,12 +48,7 @@ pg.connect(conString, function(err, client, done) {
   // query.on('end', function(result) { <-- result.rowCount at end, or result.rows
 });
 
-
-//request('http://www.xignite.com/xAnalysts.json/ListResearchFields', {form: xignite}, function (error, response, body) {
-//  if (!error && response.statusCode == 200) {
-//    
-//  }
-//});
+moment().format();
 
 function createClient() {
 	var client = new pg.Client(conString);
@@ -207,3 +204,136 @@ var server = require('http').createServer(app).listen(app.get('port'), function(
   console.log('Node app is running on port', app.get('port'));
 });
 
+var stocks = [];
+
+function requestStock(s, symbol) {
+	//LOGO
+	request({url: 'https://www.xignite.com/xLogos.json/GetLogo', 
+		qs: {IdentifierType: "Symbol", Identifier: symbol, _Token: xignite}}, 
+	function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+		var info = JSON.parse(body);
+		if (info.Outcome === "Success") {
+		  s.logo = info.URL;
+		  if (info.Security && info.Security.Outcome === "Success") {
+			s.industry = info.Security.CategoryOrIndustry;
+		  }
+		}
+	  } else {
+		console.log(error + ", " + response + ", logo");
+	  }
+	});
+	
+	request({url: 'https://www.xignite.com/xEstimates.json/GetResearchReport', 
+		qs: {IdentifierType: "Symbol", Identifier: symbol, EstimatesResearchReportType: "EarningsEstimates", _Token: xignite}}, 
+	function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+		var info = JSON.parse(body);
+		if (info.Outcome === "Success") {
+		  s.logo = info.URL;
+		  info.ResearchReportLines.forEach(function(entry) {
+			if (entry.Outcome && entry.Outcome === "Success" && (entry.Name == "Mean Estimate" || entry.Name == "Percent Growth" || entry.Name == "LTG Current Mean")) {
+				if (entry.Name == "LTG Current Mean") {
+					s.futureEstimate += parseFloat(entry.Values[0]);
+				} else {
+					s.currentEstimate += parseFloat(entry.Values[2]);
+					s.futureEstimate += parseFloat(entry.Values[3]);
+				}
+			}
+		  });
+		}
+	  } else {
+		console.log(error + ", " + response + ", research X");
+	  }
+	});
+	
+	request({url: 'https://www.xignite.com/xAnalysts.json/GetResearchReport', 
+		qs: {IdentifierType: "Symbol", Identifier: symbol, AnalystsResearchReportType: "SummaryCurrentStatistics", _Token: xignite}}, 
+	function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+		var info = JSON.parse(body);
+		if (info.Outcome === "Success") {
+		  s.logo = info.URL;
+		  info.ResearchReportLines.forEach(function(entry) {
+			if (entry.Outcome && entry.Outcome === "Success" && entry.Name == "Standard Deviation") {
+				s.currentDeviation += parseFloat(entry.Values[2]);
+				s.futureDeviation += parseFloat(entry.Values[3]);
+			}
+		  });
+		}
+	  } else {
+		console.log(error + ", " + response + ", research A");
+	  }
+	});
+	
+	request({url: 'https://www.xignite.com/xGlobalHistorical.json/GetCashDividendTotal', 
+		qs: {IdentifierType: "Symbol", Identifier: symbol, EndDate: moment().format('MM/DD/YYYY'),
+			StartDate: moment().subtract(1, "years").format("MM/DD/YYYY"), _Token: xignite}}, 
+	function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+		var info = JSON.parse(body);
+		if (info.Outcome === "Success") {
+		  s.dividend += parseFloat(info.CashTotal);
+		}
+	  } else {
+		console.log(error + ", " + response + ", dividend");
+	  }
+	});
+}
+
+function requestExchange(mic) {
+	request({url: 'https://www.xignite.com/xGlobalHistorical.json/ListSymbols', 
+		qs: {Exchange: mic, StartSymbol: "A", EndSymbol: "B", _Token: xignite}}, 
+	function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+		var info = JSON.parse(body);
+		if (info.Outcome === "Success") {
+			console.log("loading " + info.SecurityDescriptions.length + " stock symbols");
+		  info.SecurityDescriptions.forEach(function(entry) {
+			  var s = {
+				  symbol: entry.Symbol,
+				  name: entry.Name,
+				  logo: "",
+				  industry: "",
+				  meanRecommend: 0,
+				  currentEstimate: 0,
+				  futureEstimate: 0,
+				  currentDeviation: 0,
+				  futureDeviation: 0,
+				  dividend: 0
+			  };
+			  stocks.push(s); 
+			  requestStock(s, entry.Symbol);
+		  });
+		}
+	  } else {
+		console.log(error + ", " + response.statusCode + ", requestExchange");
+	  }
+	});
+}
+
+// catalog stocks
+/*request.post({url: 'https://www.xignite.com/xGlobalHistorical.json/ListExchanges', qs: {_Token: xignite}}, 
+function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    var info = JSON.parse(body);
+	if (info.Outcome !== "Success") {
+	  console.log(info.Outcome + ", " + body);
+	} else {
+	console.log("loading " + info.ExchangesDescriptions.length + " exchanges");*/
+	var arr = ['XCNQ', 'XTNX', 'XTSE', 'XTSX'];
+	  arr.forEach(function(entry) {
+		  requestExchange(entry);
+	  });
+/*	  
+	}
+  } else {
+	console.log(error + ", " + response.statusCode);
+  }
+});*/
+
+socketio.listen(server).on("connection", function(socket) {
+	socket.on("getStocks", function() {
+		socket.emit("stocks", stocks);
+	});
+});
