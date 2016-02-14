@@ -81,7 +81,7 @@ function createClient() {
 					} else {
 						sess.uid = res.rows[0].id;
 						sess.uname = user;
-						sess.points = result.rows[0].points;
+						sess.points = 0;
 						sess.save();
 						response.end('registerSuccess');
 						client.end();
