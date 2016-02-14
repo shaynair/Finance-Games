@@ -63,3 +63,13 @@ a:hover
       color: rgb(238, 238, 238);
 
 }
+
+.fadeimg{
+    opacity:1;
+    transition:opacity .25s ease-in-out;
+    -moz-transition:opacity .25s ease-in-out;
+    -webkit-transition:opacity .25s ease-in-out
+}
+.fadeimg:hover{
+    opacity:.8
+}

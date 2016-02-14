@@ -1,9 +1,14 @@
-			var before = $("#prev");
-			var after = $("#next");
+			var before = $(".prev");
+			var after = $(".next");
 			var t = $("#text");
 			var v = $("#video");
 			var w = $(".well");
+			var q = $("#question");
+			var qT = $("#questionTitle");
+			var cW = $(".choiceWell");
+			var m = $(".module");
 			
+			var choic = false;
 			var slid = 0;
 			function update(change) {
 				if (change != 0) {
@@ -14,20 +19,26 @@
 				} else if (slid >= data.length) {
 					slid = data.length - 1;
 				}
-				before.attr("disabled", slid == 0);
+				var firstAnim = (change < 0 ? "Right" : "Left");
+				var secondAnim = (change < 0 ? "Left" : "Right");
+				before.attr("disabled", slid == 0 || slid >= data.length - 1);
 				if (slid == data.length - 1) {
-					after.text("END");
-					after.css("background-color", "red");
 					// module
+						w.addClass("animated fadeOut" + firstAnim + "Big").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+							refresh();
+							w.css("display", "none");
+							m.css("display", "block");
+							m.addClass("animated fadeIn" + secondAnim + "Big")
+									.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+								$(this).removeClass("animated fadeIn" + secondAnim + "Big");
+							});
+						});
 				} else {
 					after.text("NEXT");
 					after.css("background-color", "");
 					if (change == 0) {
 						refresh();
 					} else {
-						var firstAnim = (change < 0 ? "Right" : "Left");
-						var secondAnim = (change < 0 ? "Left" : "Right");
-						
 						w.addClass("animated fadeOut" + firstAnim + "Big").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
 							refresh();
 							$(this).removeClass("fadeOut" + firstAnim + "Big")
@@ -40,21 +51,58 @@
 				}
 			}
 			
+			function choice(x) {
+				choic = true;
+				after.attr("disabled", false);
+					var num = data[slid].content.length - 3;
+					for (var i = 0; i < num; i++) {
+						if (i != x) {
+							cW.eq(i).children(".choiceRadio").get(0).checked = false;
+						}
+					}
+			}
+			
 			function refresh() {
+				choic = false;
 						var b = data[slid];
 						if (b.mode == 0) {
 							t.css("display", "block");
 							v.css("display", "none");
+							q.css("display", "none");
+							qT.css("display", "none");
+							cW.css("display", "none");
+							w.css("min-height", "240px");
 							t.text(b.content);
 							after.attr("disabled", false);
 						} else if (b.mode == 1) {
 							t.css("display", "none");
 							v.css("display", "block");
+							q.css("display", "none");
+							qT.css("display", "none");
+							cW.css("display", "none");
+							w.css("min-height", "480px");
 							v.attr("src", b.content);
 							after.attr("disabled", false);
 						} else if (b.mode == 2) {
 							t.css("display", "none");
 							v.css("display", "none");
+							q.text("");
+							q.css("display", "block");
+							qT.css("display", "block");
+							w.css("min-height", "240px");
+							qT.text(b.content[0]);
+							cW.css("display", "block");
+							
+							var num = b.content.length - 3;
+							for (var i = 0; i < num; i++) {
+								cW.eq(i).children(".choiceRadio").attr("value", b.content[i+2]);
+								cW.eq(i).children(".choiceText").text(b.content[i+2]);
+							}
+							while(i < 5) {
+								cW.eq(i).css("display", "none");
+								i++;
+							}
+							
 							after.attr("disabled", true);
 							// TODO
 						}
@@ -63,8 +111,24 @@
 			function next() {
 				if (after.attr("disabled")) {
 					return;
+				} else if (choic) {
+					b = data[slid];
+					var num = b.content.length - 3;
+					for (var i = 0; i < num; i++) {
+						if (cW.eq(i).children(".choiceRadio").get(0).checked) {
+							break;
+						}
+					}
+					if (b.content[1] - 1 != i) {
+						q.fadeOut(200, function() {
+							q.text(b.content[b.content.length - 1]).fadeIn(200);
+						});
+						return;
+					}
+					for (var i = 0; i < num; i++) {
+						cW.eq(i).children(".choiceRadio").get(0).checked = false;
+					}
 				}
-				update(1);
 				
 				var b = data[slid];
 				var chang = (b.mode + 1);
@@ -88,6 +152,11 @@
 						pDisplay.text('' + data);
 					}
 				});
+				if (slid == data.length - 1) {
+					window.location.replace("/");
+				} else {
+					update(1);
+				}
 			}
 			
 			function prev() {

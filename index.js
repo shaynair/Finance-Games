@@ -154,21 +154,21 @@ function createClient() {
 
 
 app.get('/', function(request, response) {
-	if (request.session.uid) {
+	if (request.session && request.session.uid) {
 		response.render('pages/main');
 	} else {
 		response.render('pages/index');
 	}
 });
 app.get('/invest', function(request, response) {
-	if (request.session.uid) {
+	if (request.session && request.session.uid) {
 		response.render('pages/invest');
 	} else {
 		response.redirect('/');
 	}
 });
 app.get('/budget', function(request, response) {
-	if (request.session.uid) {
+	if (request.session && request.session.uid) {
 		response.render('pages/budget');
 	} else {
 		response.redirect('/');
@@ -176,6 +176,13 @@ app.get('/budget', function(request, response) {
 });
 app.post('/change',function(req,res){
 	doneModule(req.session.uid, req.body.type, req.body.slide, req.body.change, req.session, res);
+});
+app.get('/store',function(req,res){
+	if (req.session.uid) {
+		res.render('pages/store');
+	} else {
+		res.redirect('/');
+	}
 });
 app.post('/points',function(req,res){
 	res.end('' + req.session.points);

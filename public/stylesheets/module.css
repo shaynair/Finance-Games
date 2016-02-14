@@ -61,22 +61,18 @@ a:hover
 	margin-top: 50px;
 	margin-left: 50px;
 	margin-right: 50px;
-	min-height: 100px;
+	min-height: 240px;
+	min-width: 600px;
 	position: relative;
-}
-
-#quizWell {
-	margin-top: 50px;
-	margin-left: 250px;
-	margin-right: 250px;
-	min-height: 100px;
-	position: relative;
+	box-shadow: 0 0 5px grey;
 }
 
 iframe {
-    width: 1000 px;
-    height: 515 px;
-    
+	width: 90%;
+	height: 90%;
+	position: absolute;
+    right: 5%;
+    top: 5%;
 }
 
 body {
@@ -92,11 +88,21 @@ form {
     text-align:center;
 }
 
+.fadeimg{
+    opacity:1;
+    transition:opacity .25s ease-in-out;
+    -moz-transition:opacity .25s ease-in-out;
+    -webkit-transition:opacity .25s ease-in-out
+}
+.fadeimg:hover{
+    opacity:.8
+}
+
 ul {
     list-style: none;
 }
 
-#next {
+.next {
 	margin: 5px 5px 5px 5px;
 	position: absolute;
 	bottom:0px;
@@ -105,7 +111,7 @@ ul {
 
 
 
-#prev {
+.prev {
 	margin: 5px 5px 5px 5px;
 	position: absolute;
 	bottom:0px;
@@ -115,4 +121,21 @@ ul {
 
 .pointchange {
 	color: palegreen;
+}
+
+.choiceWell {
+	min-height: 10px;
+	min-width: 500px;
+	margin-top: 0 !important;
+}
+
+.storejumbo {
+    background-image: url("../images/Loose-Change1.jpg");
+    background-size: cover;
+    color: white;
+    text-shadow: 2px 2px #000000;
+}
+
+#whiteback {
+    background-color: aliceblue;
 }

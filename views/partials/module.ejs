@@ -1,9 +1,78 @@
 <div class="well">
 	<p style="display: none;" id="text"></p>
     <iframe style="display: none;" id="video" width="1000" height="515" src=""></iframe>
-	<h1 id="questionTitle" style="display: none;" align="middle">Title 1</h1>
-	<p id="question" style="display: none;" align="middle">This is the hardest question ever. Are you ready?</p>
-	<div class="btn btn-primary" onclick="prev()" id="prev">PREVIOUS</div>
-	<div class="btn btn-primary" onclick="next()" id="next">NEXT</div>
+	<h1 id="questionTitle" align="middle" style="display: none;"></h1>
+	<p id="question" style="display: none;" align="middle"></p>
+	<div class="well-sm choiceWell" style="display: none;"><input type="radio" class="choiceRadio" name="q1" onclick="choice(0)"><span class="choiceText"></span></div>
+	<div class="well-sm choiceWell" style="display: none;"><input type="radio" class="choiceRadio" name="q2" onclick="choice(1)"><span class="choiceText"></span></div>
+	<div class="well-sm choiceWell" style="display: none;"><input type="radio" class="choiceRadio" name="q3" onclick="choice(2)"><span class="choiceText"></span></div>
+	<div class="well-sm choiceWell" style="display: none;"><input type="radio" class="choiceRadio" name="q4" onclick="choice(3)"><span class="choiceText"></span></div>
+	<div class="well-sm choiceWell" style="display: none;"><input type="radio" class="choiceRadio" name="q5" onclick="choice(4)"><span class="choiceText"></span></div>
+	<div class="btn btn-primary fadeimg prev" onclick="prev()">PREVIOUS</div>
+	<div class="btn btn-primary fadeimg next" onclick="next()">NEXT</div>
 </div>
+<div class="module jumbotron container" style="display: none;" ng-app="myApp" ng-controller="myCtrl"> 
+  <p>It’s easy to determine how much money you earn in a month, but do you really know where these inflows go towards?
+Fill in this chart to see where you are financially on an average month. You can add or remove rows based on your inflows and spending habits.
+</p>   
+<br>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Income</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Monthly Salary (from part-time job)</td>
+        <td>$ <input type="number" ng-model="monthlySalary"></td>
+      </tr>
+      <tr>
+        <td>Monthly Allowance</td>
+        <td>$ <input type="number" ng-model="monthlyAllowance"></td>
+      </tr>
+      <tr>
+        <td>Other</td>
+        <td>$ <input type="number" ng-model="other"></td>
+      </tr> 
+      <tr>
+          <td><i>Total income</i></td>
+      <td>$ {{ monthlySalary + monthlyAllowance + other }}</td>
+      </tr>
+     <thead>
+        <br>
+         <tr>
+             <th>Expenses</th>
+         </tr>
+    </thead>
+        <tr>
+             <td>Food</td>
+             <td>$ <input type="number" ng-model="food"></td>
+      </tr>
+      <tr>
+             <td>Clothing</td>
+             <td>$ <input type="number" ng-model="clothing"></td>
+      </tr>
+        <tr>
+             <td>Entertainment</td>
+             <td>$ <input type="number" ng-model="entertainment"></td>
+      </tr>
+      <tr>
+             <td>Miscellaneous </td>
+             <td>$ <input type="number" ng-model="miscellaneous"></td>
+      </tr>
+      <tr>
+          <td><i>Total expenses</i></td>
+          <td>$ {{ food + clothing + entertainment + miscellaneous + expenses }} </td>
+      </tr>
+      <tr>
+          <td><strong><i>Monthly Net Income</i></strong></td>
+          <td id="color_indicator">$ <strong>{{ netIncome() }}</strong> </td>
+      </tr>
+    </tbody>
+  </table>
+	<div style="background-color: red;" class="btn btn-primary fadeimg" onclick="next()">END</div>
+</div>	
+			
+			
  
