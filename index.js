@@ -34,6 +34,10 @@ pg.connect(conString, function(err, client, done) {
 			+ 'name text not null, email text not null, '
 			+ 'password text not null, points int not null default 0)')
 			.on('end', client.end.bind(client));
+  client.query('CREATE TABLE IF NOT EXISTS done_modules(id SERIAL PRIMARY KEY, '
+			+ 'user_id int not null, module int not null, '
+			+ 'slide int not null default 0)')
+			.on('end', client.end.bind(client));
   done();
   // var query = client.query("stuff = $1", ['$1 here']);
   // query.on('row', function(row, result) {
@@ -77,6 +81,7 @@ function createClient() {
 					} else {
 						sess.uid = res.rows[0].id;
 						sess.uname = user;
+						sess.points = result.rows[0].points;
 						sess.save();
 						response.end('registerSuccess');
 						client.end();
@@ -102,12 +107,44 @@ function createClient() {
 					if (res == true) {
 						sess.uid = result.rows[0].id;
 						sess.uname = result.rows[0].name;
+						sess.points = result.rows[0].points;
 						sess.save();
 						response.end('loginSuccess');
 						client.end();
 					} else {
 						response.end('loginErrorPass');
 						client.end();
+					}
+				});
+			}
+		});
+	}
+	
+	function doneModule(uid, type, slide, change, sess, response) {
+		var client = createClient();
+		client.query("SELECT * FROM done_modules WHERE user_id = $1 AND module = $2 AND slide = $3", [uid, type, slide], function(error, result) {
+			if (error != null || result.rowCount > 0) {
+				response.end('none');
+				client.end();
+			} else {
+				client.query("INSERT INTO done_modules (user_id, module, slide) VALUES($1, $2, $3)", [uid, type, slide], function(err, res) {
+					if (err != null) {
+						response.end('error');
+						console.log("Error update: " + err);
+						client.end();
+					} else {
+						client.query("UPDATE users SET points = $1 WHERE id = $2", [sess.points + parseInt(change), uid], function(err, res) {
+							if (err != null) {
+								response.end('error');
+								console.log("Error update: " + err);
+								client.end();
+							} else {
+								sess.points += parseInt(change);
+								sess.save();
+								response.end('' + sess.points);
+								client.end();
+							}
+						});
 					}
 				});
 			}
@@ -136,6 +173,12 @@ app.get('/budget', function(request, response) {
 	} else {
 		response.redirect('/');
 	}
+});
+app.post('/change',function(req,res){
+	doneModule(req.session.uid, req.body.type, req.body.slide, req.body.change, req.session, res);
+});
+app.post('/points',function(req,res){
+	res.end('' + req.session.points);
 });
 app.post('/login',function(req,res){
 	login(req.body.name, req.body.pass, req.session, res);

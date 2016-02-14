@@ -12,8 +12,10 @@
   </div>
 
   <% include ../partials/footer.ejs %>
+  <% include ../partials/points.ejs %>
  		<script>
 			// mode 0 = text, 1 = video, 2 = quiz
+			var typ = 1;
 			var data = [
 				{mode: 0, content: 'Hooray! You have just been accepted to your dream university. You cannot wait to meet new friends, move out of home, and attend that Harry Potter class that everyone is talking about. You are feeling like you’re on cloud 9 until that letter came in…tuition payment. Tuition alone will be $15,000 per year. How do you plan to pay for it? Borrow money frm your parents, take a part time job, apply for OSAP and grants, investing your money, or applying for a bank loan, perhaps.'},
 				{mode: 2, content: ['What is Budgeting?', 4, 'Keeping your finances on track.', 'Creating a plan to spend your money.', 'Forecasting how much money you will need to save for milestones in your life (i.e. wedding, mortgage, retirement, etc.).', 'All of the above.']},

@@ -1,0 +1,10 @@
+<script>
+	$.post("/points", {points: 0}, function(data) {
+		if (data == 'error') {
+			alert("An error occurred.");
+		} else if (data != 'none') {
+			$('.points').text(data);
+		}
+	});
+	
+</script>

@@ -12,7 +12,7 @@
 
 #firstRow {
     background-color: darkseagreen;
-    background-image: url("../images/H4JsuO.gif");
+    background-image: url("H4JsuO.gif");
       height: 400px;
     background-size: cover;    
 }
@@ -65,16 +65,12 @@ a:hover
 	position: relative;
 }
 
-
-
-#next {	
-	color: white;
-	background-color: red;
-	float: right;
-	position: absolute;
-	bottom: 0px;
-	right: 0;
-	margin: 5px 5px 5px 5px;
+#quizWell {
+	margin-top: 50px;
+	margin-left: 250px;
+	margin-right: 250px;
+	min-height: 100px;
+	position: relative;
 }
 
 iframe {
@@ -98,4 +94,25 @@ form {
 
 ul {
     list-style: none;
+}
+
+#next {
+	margin: 5px 5px 5px 5px;
+	position: absolute;
+	bottom:0px;
+	right:0px;
+}
+
+
+
+#prev {
+	margin: 5px 5px 5px 5px;
+	position: absolute;
+	bottom:0px;
+	right: 55px;
+	
+}
+
+.pointchange {
+	color: palegreen;
 }

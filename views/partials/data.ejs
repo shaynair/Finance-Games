@@ -4,22 +4,24 @@
 			var v = $("#video");
 			var w = $(".well");
 			
-			var slide = 0;
+			var slid = 0;
 			function update(change) {
 				if (change != 0) {
-					slide += change;
+					slid += change;
 				}
-				if (slide < 0) {
-					slide = 0;
-				} else if (slide >= data.length) {
-					slide = data.length - 1;
+				if (slid < 0) {
+					slid = 0;
+				} else if (slid >= data.length) {
+					slid = data.length - 1;
 				}
-				before.attr("disabled", slide == 0);
-				if (slide == data.length - 1) {
+				before.attr("disabled", slid == 0);
+				if (slid == data.length - 1) {
 					after.text("END");
+					after.css("background-color", "red");
 					// module
 				} else {
 					after.text("NEXT");
+					after.css("background-color", "");
 					if (change == 0) {
 						refresh();
 					} else {
@@ -39,33 +41,59 @@
 			}
 			
 			function refresh() {
-						var b = data[slide];
+						var b = data[slid];
 						if (b.mode == 0) {
 							t.css("display", "block");
 							v.css("display", "none");
 							t.text(b.content);
 							after.attr("disabled", false);
-							before.attr("disabled", false);
 						} else if (b.mode == 1) {
 							t.css("display", "none");
 							v.css("display", "block");
 							v.attr("src", b.content);
 							after.attr("disabled", false);
-							before.attr("disabled", false);
 						} else if (b.mode == 2) {
 							t.css("display", "none");
 							v.css("display", "none");
 							after.attr("disabled", true);
-							before.attr("disabled", true);
 							// TODO
 						}
 			}
 			
 			function next() {
+				if (after.attr("disabled")) {
+					return;
+				}
 				update(1);
+				
+				var b = data[slid];
+				var chang = (b.mode + 1);
+				$.post("/change", {type: typ, slide: slid, change: chang}, function(data) {
+					if (data == 'error') {
+						alert("An error occurred.");
+					} else if (data != 'none') {
+						var pDisplay = $('.points');
+					
+						var oldPoints = parseInt(pDisplay.text());
+						var newPoints = parseInt(data);
+						
+						var difference = newPoints - oldPoints;
+						
+						$('.pointchange').text('+' + difference).removeClass("fadeOutUpBig").addClass("animated fadeInUpBig")
+									.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+							$(this).removeClass("fadeInUpBig")
+									.addClass("animated fadeOutUpBig");
+						});
+						
+						pDisplay.text('' + data);
+					}
+				});
 			}
 			
 			function prev() {
+				if (before.attr("disabled")) {
+					return;
+				}
 				update(-1);
 			}
 			
