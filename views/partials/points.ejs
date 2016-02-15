@@ -1,9 +1,10 @@
 <script>
-	$.post("/points", {points: 0}, function(data) {
-		if (data == 'error') {
-			alert("An error occurred.");
-		} else if (data != 'none') {
-			$('.points').text(data);
+	var pathname = window.location.pathname;
+	$(document).ready(function() {
+		if (pathname == "/store") {
+			$(".point-bar").addClass("active");
+		} else if (pathname == "/") {
+			$(".home-bar").addClass("active");
 		}
 	});
 	
