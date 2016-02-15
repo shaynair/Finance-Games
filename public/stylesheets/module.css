@@ -5,43 +5,11 @@
     float:inherit;
 }
 
-.dropdown {
-    position: relative;
-}
-
-
-#firstRow {
-    background-color: darkseagreen;
-    background-image: url("H4JsuO.gif");
-      height: 400px;
-    background-size: cover;    
-}
-
 .jumbotron {
     margin-top: 10px;
     background-color: rgb(238, 238, 238);
     color:dimgrey;
-    
-}
-
-#secondRow div {
-    background-color: rgb(238, 238, 238);
-    border-radius: 5px;
-    margin-right: 10px;
-    left: 25%;
-}
-
-#secondRow div:hover {
-    background-color: darkseagreen;
-    border:1px solid darkseagreen; 
-    border-radius: 5px;
-    margin-right: 10px;
-    left: 25%;
-}
-
-#secondRow {
-    margin-top: 30px;
-    text-align: center;    
+    box-shadow: 0 0 5px grey;
 }
 
 a {
@@ -167,7 +135,8 @@ th {
 }
 
 .module {
-	min-height: 540px;
+    min-height: 540px;
+    box-shadow: 0 0 5px grey;
 }
 
 #leftCol {

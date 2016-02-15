@@ -5,10 +5,6 @@
     float:inherit;
 }
 
-.dropdown {
-    position: relative;
-}
-
 body {
     margin-top: 20px;
     background-color: rgb(238, 238, 238);
@@ -19,8 +15,6 @@ body {
     background-image: url("../images/H4JsuO.gif");
       height: 400px;
     background-size: cover;
-  
-    
 }
 
 .jumbotron {
@@ -28,7 +22,7 @@ body {
 background-color: transparent;
     color:aliceblue;
     text-shadow: 2px 2px #000000;
-    
+    box-shadow: 0 0 5px grey;
 }
 
 #secondRow div {
