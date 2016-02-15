@@ -12,7 +12,6 @@
 	<% include ../partials/invest.ejs %>
   </div>
 
-  <% include ../partials/footer.ejs %>
   <% include ../partials/points.ejs %>
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
  		<script>
@@ -23,7 +22,12 @@
 			var riskType = ["low", "medium", "high"];
 			
 			function calculateStockPoints(s, risk) {
-				return s.dividend + s.meanRecommend + ((s.currentDeviation / 100.0) <= risk ? (s.currentDeviation / 100.0) : 0) + (s.futureEstimate - s.currentEstimate) / 10.0;
+				var dev = s.currentDeviation;
+				if (dev <= 0) {
+					dev = s.futureDeviation;
+				}
+				dev /= 100.0;
+				return s.dividend + s.meanRecommend + (dev > 0 && dev <= risk ? ((riskType.length - (risk - dev)) / riskType.length) : 0) + (s.futureEstimate > 0 && s.currentEstimate > 0 ? (s.futureEstimate / s.currentEstimate - 1.0) : 0);
 			}
 			
 			socket.on('stocks', function(data) {
@@ -43,20 +47,26 @@
 							$(this).addClass("active-row");
 						
 							$("#companyLogo").attr("src", s.logo);
+							$("#companyLogo").attr("alt", s.symbol);
 							$("#companyName").html('<b>' + s.name + '</b>' + " (" + s.symbol + ")");
 							$("#companySymbol").html('<i>' + s.industry + '</i>');
+							
+							var dev = s.currentDeviation;
+							if (dev <= 0) {
+								dev = s.futureDeviation;
+							}
+							dev /= 100.0;
 							
 							var pro = $(".proPoint");
 							pro.empty();
 							if (s.dividend > 0) {
-								pro.append('<li>This stock pays ' + s.dividend + ' annual dividends.</li>');
+								pro.append('<li>This stock pays ' + s.dividend + ' in annual dividends.</li>');
 							}
-							if ((s.currentDeviation / 100.0) <= risk) {
-								var type = riskType[((s.currentDeviation / 100.0) | 0) - 1];
-								pro.append('<li>This stock fits your ' + riskType[risk - 1] + '-risk assessment.</li>');
+							if (dev > 0 && dev <= risk) {
+								pro.append('<li>This stock is ' + riskType[Math.max(0, Math.min(dev | 0, riskType.length) - 1)] + '-risk, fitting your ' + riskType[risk - 1] + '-risk assessment.</li>');
 							}
-							if (s.futureEstimate > s.currentEstimate) {
-								pro.append('<li>This stock is projected to increase in price in the future.</li>');
+							if (s.futureEstimate > 0 && s.currentEstimate > 0 && s.futureEstimate > s.currentEstimate) {
+								pro.append('<li>This stock is projected to increase in price in the future by ' + Math.round(Math.abs(s.futureEstimate / s.currentEstimate - 1) * 100) + '%.</li>');
 							}
 							if (s.meanRecommend > 0) {
 								pro.append('<li>This stock is recommended by experts to buy.</li>');
@@ -64,8 +74,11 @@
 							
 							var con = $(".conPoint");
 							con.empty();
-							if (s.futureEstimate < s.currentEstimate) {
-								con.append('<li>This stock is projected to decrease in price in the future.</li>');
+							if (dev > 0 && dev > risk) {
+								con.append('<li>This stock is ' + riskType[Math.max(0, Math.min(dev | 0, riskType.length) - 1)] + '-risk.</li>');
+							}
+							if (s.futureEstimate > 0 && s.currentEstimate > 0 && s.futureEstimate < s.currentEstimate) {
+								con.append('<li>This stock is projected to decrease in price in the future by ' + Math.round(Math.abs(s.futureEstimate / s.currentEstimate - 1) * 100) + '%.</li>');
 							}
 							if (s.meanRecommend < 0) {
 								con.append('<li>This stock is recommended by experts to sell.</li>');

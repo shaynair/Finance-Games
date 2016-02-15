@@ -207,10 +207,13 @@ var server = require('http').createServer(app).listen(app.get('port'), function(
 var stocks = [];
 
 function requestStock(s, symbol) {
-	//LOGO
+	var removed = false;
 	request({url: 'https://www.xignite.com/xLogos.json/GetLogo', 
 		qs: {IdentifierType: "Symbol", Identifier: symbol, _Token: xignite}}, 
 	function (error, response, body) {
+	  if (removed) {
+		return;
+	  }
 	  if (!error && response.statusCode == 200) {
 		var info = JSON.parse(body);
 		if (info.Outcome === "Success") {
@@ -219,6 +222,10 @@ function requestStock(s, symbol) {
 			s.industry = info.Security.CategoryOrIndustry;
 		  }
 		}
+	  } else if (error && error.toString().startsWith("Error: connect")) {
+		stocks.splice(stocks.indexOf(s), 1);
+		removed = true;
+		console.log("Removed " + s.name + " due to " + error);
 	  } else {
 		console.log(error + ", " + response + ", logo");
 	  }
@@ -227,6 +234,9 @@ function requestStock(s, symbol) {
 	request({url: 'https://www.xignite.com/xEstimates.json/GetResearchReport', 
 		qs: {IdentifierType: "Symbol", Identifier: symbol, EstimatesResearchReportType: "EarningsEstimates", _Token: xignite}}, 
 	function (error, response, body) {
+	  if (removed) {
+		return;
+	  }
 	  if (!error && response.statusCode == 200) {
 		var info = JSON.parse(body);
 		if (info.Outcome === "Success") {
@@ -242,6 +252,10 @@ function requestStock(s, symbol) {
 			}
 		  });
 		}
+	  } else if (error && error.toString().startsWith("Error: connect")) {
+		stocks.splice(stocks.indexOf(s), 1);
+		removed = true;
+		console.log("Removed " + s.name + " due to " + error);
 	  } else {
 		console.log(error + ", " + response + ", research X");
 	  }
@@ -250,6 +264,9 @@ function requestStock(s, symbol) {
 	request({url: 'https://www.xignite.com/xAnalysts.json/GetResearchReport', 
 		qs: {IdentifierType: "Symbol", Identifier: symbol, AnalystsResearchReportType: "SummaryCurrentStatistics", _Token: xignite}}, 
 	function (error, response, body) {
+	  if (removed) {
+		return;
+	  }
 	  if (!error && response.statusCode == 200) {
 		var info = JSON.parse(body);
 		if (info.Outcome === "Success") {
@@ -261,6 +278,10 @@ function requestStock(s, symbol) {
 			}
 		  });
 		}
+	  } else if (error && error.toString().startsWith("Error: connect")) {
+		stocks.splice(stocks.indexOf(s), 1);
+		removed = true;
+		console.log("Removed " + s.name + " due to " + error);
 	  } else {
 		console.log(error + ", " + response + ", research A");
 	  }
@@ -270,20 +291,27 @@ function requestStock(s, symbol) {
 		qs: {IdentifierType: "Symbol", Identifier: symbol, EndDate: moment().format('MM/DD/YYYY'),
 			StartDate: moment().subtract(1, "years").format("MM/DD/YYYY"), _Token: xignite}}, 
 	function (error, response, body) {
+	  if (removed) {
+		return;
+	  }
 	  if (!error && response.statusCode == 200) {
 		var info = JSON.parse(body);
 		if (info.Outcome === "Success") {
 		  s.dividend += parseFloat(info.CashTotal);
 		}
+	  } else if (error && error.toString().startsWith("Error: connect")) {
+		stocks.splice(stocks.indexOf(s), 1);
+		removed = true;
+		console.log("Removed " + s.name + " due to " + error);
 	  } else {
-		console.log(error + ", " + response + ", dividend");
+		console.log(error.toString() + ", " + response + ", dividend");
 	  }
 	});
 }
 
 function requestExchange(mic) {
 	request({url: 'https://www.xignite.com/xGlobalHistorical.json/ListSymbols', 
-		qs: {Exchange: mic, StartSymbol: "A", EndSymbol: "B", _Token: xignite}}, 
+		qs: {Exchange: mic, StartSymbol: "A", EndSymbol: "ZZZZ", _Token: xignite}}, 
 	function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
 		var info = JSON.parse(body);
@@ -302,7 +330,7 @@ function requestExchange(mic) {
 				  futureDeviation: 0,
 				  dividend: 0
 			  };
-			  stocks.push(s); 
+			  stocks.push(s);
 			  requestStock(s, entry.Symbol);
 		  });
 		}
@@ -321,7 +349,7 @@ function (error, response, body) {
 	  console.log(info.Outcome + ", " + body);
 	} else {
 	console.log("loading " + info.ExchangesDescriptions.length + " exchanges");*/
-	var arr = ['XCNQ', 'XTNX', 'XTSE', 'XTSX'];
+	var arr = [/*'XCNQ', 'XTNX', 'XTSX', */'XTSE'];
 	  arr.forEach(function(entry) {
 		  requestExchange(entry);
 	  });
