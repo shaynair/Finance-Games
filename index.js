@@ -152,21 +152,21 @@ function createClient() {
 
 app.get('/', function(request, response) {
 	if (request.session && request.session.uid) {
-		response.render('pages/main');
+		response.render('pages/main', {points: request.session.points});
 	} else {
 		response.render('pages/index');
 	}
 });
 app.get('/invest', function(request, response) {
 	if (request.session && request.session.uid) {
-		response.render('pages/invest');
+		response.render('pages/invest', {points: request.session.points});
 	} else {
 		response.redirect('/');
 	}
 });
 app.get('/budget', function(request, response) {
 	if (request.session && request.session.uid) {
-		response.render('pages/budget');
+		response.render('pages/budget', {points: request.session.points});
 	} else {
 		response.redirect('/');
 	}
@@ -176,13 +176,10 @@ app.post('/change',function(req,res){
 });
 app.get('/store',function(req,res){
 	if (req.session.uid) {
-		res.render('pages/store');
+		res.render('pages/store', {points: req.session.points});
 	} else {
 		res.redirect('/');
 	}
-});
-app.post('/points',function(req,res){
-	res.end('' + req.session.points);
 });
 app.post('/login',function(req,res){
 	login(req.body.name, req.body.pass, req.session, res);
