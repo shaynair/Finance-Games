@@ -1,7 +1,7 @@
 {
   "name": "finance-games",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "The Finance Games",
   "main": "index.js",
   "scripts": {
@@ -25,11 +25,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akshaynair/finance-games"
+    "url": "https://github.com/akshay-nair/Finance-Games"
   },
   "keywords": [
     "finance",
-    "games"
+    "games",
+	"investing",
+	"budgeting",
+	"literacy",
+	"financial",
+	"fun",
+	"capital"
   ],
   "license": "GNU"
 }
